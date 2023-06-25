@@ -26,7 +26,7 @@ from tkinter.scrolledtext import ScrolledText
 import sqlite3
 
 window = Tk()
-window.title("Staff Training List Page")
+window.title("Staff Enrollment Page")
 window.rowconfigure(0, weight=1)
 window.columnconfigure(0, weight=1)
 
@@ -54,11 +54,11 @@ training_data = cursor.fetchone()  # Fetches the first row of data
 
 #===========================Set Frame==================================================================
 
-staff_training_list = Frame(window)
+
 
 staff_emroll_page = Frame(window)  # Renamed frame
 
-for frame in (staff_training_list, staff_emroll_page):  # Added staff_emroll_page frame
+for frame in (staff_emroll_page,):  # Added staff_emroll_page frame
     frame.grid(row=0, column=0, sticky='nsew')
 
 
@@ -66,11 +66,11 @@ for frame in (staff_training_list, staff_emroll_page):  # Added staff_emroll_pag
 def show_frame(frame):
     frame.tkraise()
 
-show_frame(staff_training_list)
+show_frame(staff_emroll_page)
 
-staff_training_list.config()
+staff_emroll_page.config()
 
-st_transFrame = Frame(staff_training_list, bg='white', highlightthickness=1)
+st_transFrame = Frame(staff_emroll_page, bg='white', highlightthickness=1)
 st_transFrame.place(x=150, y=20, height=715, width=1200)
 
 # Create the label
@@ -79,35 +79,35 @@ trainlabel.place(x=0, y=15, width=400)
 
 
 # Extract the values from the training_data tuple
-venue = training_data[0]
-date = training_data[1]
-time = training_data[2]
-department = training_data[3]
+venue_ep = training_data[0]
+date_ep = training_data[1]
+time_ep = training_data[2]
+department_ep = training_data[3]
 
 
 
 venue_label = Label(st_transFrame, text='Venue:', font=('Arial', 20), fg='#2181AA', bg='white')
 venue_label.place(x=50, y=100)
 
-venue_value_label = Label(st_transFrame, text=venue, font=('Arial', 19), fg='#2181AA', bg='white')
+venue_value_label = Label(st_transFrame, text=venue_ep, font=('Arial', 19), fg='#2181AA', bg='white')
 venue_value_label.place(x=220, y=103)
 
 date_label = Label(st_transFrame, text='Date:', font=('Arial', 20), fg='#2181AA', bg='white')
 date_label.place(x=50, y=150)
 
-date_value_label = Label(st_transFrame, text=date, font=('Arial', 19), fg='#2181AA', bg='white')
+date_value_label = Label(st_transFrame, text=date_ep, font=('Arial', 19), fg='#2181AA', bg='white')
 date_value_label.place(x=220, y=150)
 
 time_label = Label(st_transFrame, text='Time:', font=('Arial', 20), fg='#2181AA', bg='white')
 time_label.place(x=50, y=200)
 
-time_value_label = Label(st_transFrame, text=time, font=('Arial', 19), fg='#2181AA', bg='white')
+time_value_label = Label(st_transFrame, text=time_ep, font=('Arial', 19), fg='#2181AA', bg='white')
 time_value_label.place(x=220, y=200)
 
 department_label = Label(st_transFrame, text='Department:', font=('Arial', 20), fg='#2181AA', bg='white')
 department_label.place(x=50, y=250)
 
-department_value_label = Label(st_transFrame, text=department, font=('Arial', 19), fg='#2181AA', bg='white')
+department_value_label = Label(st_transFrame, text=department_ep, font=('Arial', 19), fg='#2181AA', bg='white')
 department_value_label.place(x=220, y=253)
 
 
@@ -119,20 +119,26 @@ program_flow_label.place(x=50, y=300)
 
 
 # Create a box under the program flow label
-box_canvas = Canvas(st_transFrame, width=800, height=250, bg='white', highlightthickness=1, highlightbackground='black')
-box_canvas.place(x=250, y=350)
+box_canvas_ep = Canvas(st_transFrame, width=800, height=250, bg='white', highlightthickness=1, highlightbackground='black')
+box_canvas_ep.place(x=250, y=350)
 
 
 # Create a new frame for the Register button
-register_button_frame = Frame(st_transFrame, bg='#7AB8F0')
-register_button_frame.place(x=500, y=650, width=120, height=30)
+register_button_frame_ep = Frame(st_transFrame, bg='#7AB8F0')
+register_button_frame_ep.place(x=500, y=650, width=120, height=30)
 
-# Add the select button
-register_button = Button(register_button_frame, text="Register", bg='#2181AA', fg='white', font=('Arial', 12), relief='flat')
-register_button.pack(fill=BOTH, expand=True)
+# Function to handle the register button click
+def register_button_ep_clicked():
+    message = "You have been registered to this training"
+    messagebox.showinfo("Registration Successful", message)
+
+
+# Add the register button
+register_button_ep = Button(register_button_frame_ep, text="Register", bg='#2181AA', fg='white', font=('Arial', 12), relief='flat', command=register_button_ep_clicked)
+register_button_ep.pack(fill=BOTH, expand=True)
 
 #placing frame for menu bar left
-menuFrame = Frame(staff_training_list, bg='#2181AA', width=170, height=715, highlightbackground='black', highlightthickness=1)
+menuFrame = Frame(staff_emroll_page, bg='#2181AA', width=170, height=715, highlightbackground='black', highlightthickness=1)
 menuFrame.place(x=0, y=20)
 
 # Defining the buttons for menu bar in Home page left
@@ -151,7 +157,7 @@ Training_Sch_b = Button(
     fg='white', font=('yu gothic ui', 13))
 
 train_list_b = Button(
-    menuFrame, text="List of Staff", image=train_list_icon, compound=TOP, bg='#2181AA',
+    menuFrame, text="List of Training", image=train_list_icon, compound=TOP, bg='#2181AA',
     relief='flat', fg='white', font=('yu gothic ui', 13))
 
 logout_b = Button(
