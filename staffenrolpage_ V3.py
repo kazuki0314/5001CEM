@@ -102,8 +102,35 @@ program_flow_label.place(x=50, y=300)
 
 
 # Create a box under the program flow label
-box_canvas_ep = Canvas(st_transFrame, width=800, height=250, bg='white', highlightthickness=1, highlightbackground='black')
-box_canvas_ep.place(x=250, y=350)
+#box_canvas_ep = Canvas(st_transFrame, width=800, height=250, bg='white', highlightthickness=1, highlightbackground='black')
+#box_canvas_ep.place(x=250, y=350)
+
+
+#Add some style:
+stylesfp = ttk.Style()
+stylesfp.configure("Search.TEntry", borderwidth=0, relief="flat", background="#7AB8F0")
+stylesfp.theme_use("classic")
+stylesfp.configure("Treeview", background="#D6EAF8", fieldbackground="#D6EAF8", foreground="black", font=('times', 13))
+stylesfp.configure("Treeview.Heading", font=('times', 15, 'bold'), background='#2181AA', foreground='white')
+stylesfp.map("Treeview", foreground=[('selected', 'white')])
+
+open_tree = ttk.Treeview(
+    st_transFrame,
+    selectmode="extended",
+    show='headings',
+    columns=('Anything'),
+    style="Treeview"
+)
+open_tree.place(x=20, y=350, relwidth=0.97, relheight=0.41)
+
+#configure horizontal and vertical scrollbar for treeview
+x_scrollersfp = Scrollbar(open_tree, orient=HORIZONTAL, command=open_tree.xview)
+y_scrollersfp = Scrollbar(open_tree, orient=VERTICAL, command=open_tree.yview)
+x_scrollersfp.pack(side=BOTTOM, fill=X)
+y_scrollersfp.pack(side=RIGHT, fill=Y)
+open_tree.config( xscrollcommand=x_scrollersfp.set, yscrollcommand=y_scrollersfp)
+
+
 
 
 # Create a new frame for the Register button
@@ -131,9 +158,9 @@ tl_label.place(x=0, y=15, width=400)
 search_area_framesft = Frame(sftrainlist, bg='#7AB8F0')
 search_area_framesft.place(x=45, y=80, width=300, height=40)
 
-search_icon_sft = PhotoImage(file="images/search_icon_2.png")
-search_label_sft = Label(search_area_framesft, image=search_icon_sft, bg='#7AB8F0')
-search_label_sft.pack(side=RIGHT, padx=5)
+#search_icon_sft = PhotoImage(file="images/search_icon_2.png")
+#search_label_sft = Label(search_area_framesft, image=search_icon_sft, bg='#7AB8F0')
+#search_label_sft.pack(side=RIGHT, padx=5)
 
 search_textlsp = Entry(search_area_framesft, bg='#7AB8F0', font=('Arial', 12), relief='flat')
 search_textlsp.pack(side=LEFT, padx=5)
@@ -293,7 +320,7 @@ for row in training_datast:
 menuFrame = Frame(staff_training_list, bg='#2181AA', width=170, height=715, highlightthickness=1)
 menuFrame.place(x=0, y=20)
 
-# Defining the buttons for menu bar in Home page left
+#Defining the buttons for menu bar in Home page left
 home_icon = PhotoImage(file="images/home_icon.png")
 train_sch_icon = PhotoImage(file="images/ts_icon.png")
 train_list_icon = PhotoImage(file="images/ls_icon.png")
@@ -309,7 +336,7 @@ Training_Sch_b = Button(
     fg='white', font=('yu gothic ui', 13))
 
 train_list_b = Button(
-    menuFrame, text="List of Training", image=train_list_icon, compound=TOP, bg='#2181AA',
+   menuFrame, text="List of Training", image=train_list_icon, compound=TOP, bg='#2181AA',
     relief='flat', fg='white', font=('yu gothic ui', 13))
 
 logout_b = Button(
