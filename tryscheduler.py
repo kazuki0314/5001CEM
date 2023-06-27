@@ -139,7 +139,9 @@ def switchMonths(direction):
     printMonthYear(month + direction, year)  # pylint: disable=E0601
     makeButtons()
     month += direction
-    monthGenerator(dayMonthStarts(month + direction, year), daysInMonth(month + direction, year),month)
+
+    monthGenerator(dayMonthStarts(month, year), daysInMonth(month, year),month, year)
+
     
   
 # Change month buttons at top of the page
@@ -150,7 +152,9 @@ def makeButtons():
     goForward.grid(column=6, row=0)
 
 # Creates most of the calendar
-def monthGenerator(startDate, numberOfDays,month):
+
+def monthGenerator(startDate, numberOfDays,month,year):
+
     
     #staff details
     staff_id_scheduler= str('000001')
@@ -188,7 +192,9 @@ def monthGenerator(startDate, numberOfDays,month):
 
 
                 for i in scheduler_date:
-                    if i[0][3:5]  == str(month) and str(i[0][0:2]) == str(day):
+
+                    if i[0][3:5]  == str(month) and str(i[0][0:2]) == str(day) and str(i[0][6:10]) == str(year):
+
                         t.insert(END,str(i[1]))
 
                     else:
@@ -293,18 +299,19 @@ def daysInMonth(month, year):
             numberDays = 28
     return numberDays
 
-# Holds the raw text input for each day
-saveDict = {}
 
-# Holds the text objects on each day
-textObjectDict = {}
+
+
 
 # This makes the grid object appear
 today = date.today()
 
 printMonthYear(month, year)
 makeButtons()
-monthGenerator(dayMonthStarts(month, year), daysInMonth(month, year),month)
+
+monthGenerator(dayMonthStarts(month, year), daysInMonth(month, year),month, year)
+
+
 
 
 #placing frame for menu bar left
