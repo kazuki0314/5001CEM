@@ -1,14 +1,13 @@
-from tkinter import ttk
+#from tkinter import ttk
 from tkinter import messagebox
-import datetime
-import sqlite3
+#import datetime
+#import sqlite3
 from tkinter import *
 from tkcalendar import Calendar
 from datetime import date
 from tkinter import filedialog
 from tkinter import PhotoImage
 import json
-
 
 window = Tk()
 window.rowconfigure(0, weight=1)
@@ -24,15 +23,6 @@ HRhomepage = Frame(window)  # page for HR
 listofstaff = Frame(window)  # page for HR
 for frame in (login, staffhomepage, staffenrolpage, stafftraininglist, scheduler, HRhomepage,listofstaff):
     frame.grid(row=0, column=0, sticky='nsew')
-
-
-#connect to database
-
-conn = sqlite3.connect('SE Project.db')
-
-cursor = conn.cursor()
-
-
 
 # function to show frame in window
 def show_frame(frame):
@@ -72,15 +62,6 @@ TransBottomFrame = Frame(transFrame, bg='white')
 TransBottomFrame.place(x=40, y=65, height=700, width=1115)
 Calendar = Frame(TransBottomFrame)
 Calendar.place(x = 10, y = 0, relwidth=0.97, relheight=5)
-
-
-
-
-    
-    
-
-
-
 
 month = date.today().month
 year = date.today().year
@@ -130,6 +111,9 @@ def switchMonths(direction):
         month = 13
         year -= 1
 
+    # Clears the old dictionarys so they can be used in the next month
+    textObjectDict.clear()
+    saveDict.clear()
 
     # Reprint the calendar with the new values
     Calendar.destroy()
@@ -138,12 +122,9 @@ def switchMonths(direction):
 
     printMonthYear(month + direction, year)  # pylint: disable=E0601
     makeButtons()
+    monthGenerator(dayMonthStarts(month + direction, year), daysInMonth(month + direction, year))
     month += direction
 
-    monthGenerator(dayMonthStarts(month, year), daysInMonth(month, year),month, year)
-
-    
-  
 # Change month buttons at top of the page
 def makeButtons():
     goBack = Button(Calendar, text="<", command=lambda: switchMonths(-1))
@@ -152,21 +133,7 @@ def makeButtons():
     goForward.grid(column=6, row=0)
 
 # Creates most of the calendar
-
-def monthGenerator(startDate, numberOfDays,month,year):
-
-    
-    #staff details
-    staff_id_scheduler= str('000001')
-
-    staff_id_scheduler_training= cursor.execute("""SELECT Add_Training.Date, Add_Training.Traning_Name FROM Add_Training
-                                                            JOIN Participants ON Add_Training.Training_ID = Participants.Training_ID
-                                                            WHERE Participants.Staff_ID = ? """,(staff_id_scheduler,))
-    scheduler_date = cursor.fetchall()
-
-
-        
-
+def monthGenerator(startDate, numberOfDays):
     # Holds the names for each day of the week
     dayNames = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 
@@ -184,22 +151,11 @@ def monthGenerator(startDate, numberOfDays,month,year):
                 dayFrame = Frame(Calendar)
 
                 # Creates a textbox inside the dayframe
-                t = Text(dayFrame, width=15, height=4, fg= 'black')
+                t = Text(dayFrame, width=15, height=4)
                 t.grid(row=1)
 
-                if len(str(month)) ==1:
-                    month = str('0')+ str(month)
-
-
-                for i in scheduler_date:
-
-                    if i[0][3:5]  == str(month) and str(i[0][0:2]) == str(day) and str(i[0][6:10]) == str(year):
-
-                        t.insert(END,str(i[1]))
-
-                    else:
-                        pass
-
+                # Adds the text object to the save dict
+                textObjectDict[day] = t
 
                 # Changes changes dayframe to be formated correctly
                 dayFrame.grid(row=row + 2, column=column, sticky='nsew')
@@ -208,36 +164,36 @@ def monthGenerator(startDate, numberOfDays,month,year):
                 dayNumber.grid(row=0)
                 day += 1
             index += 1
-##    # Creates the buttons to load and save JSON's
-##    loadFrom =Button(Calendar, text="load month from...", command=loadFromJSON)
-##    saveToButton = Button(Calendar, text="save month to...", command=saveToJSON)
-##
-##    # Places them below the calendar
-##    loadFrom.grid(row=8, column=4)
-##    saveToButton.grid(row=8, column=2)
+    # Creates the buttons to load and save JSON's
+    loadFrom =Button(Calendar, text="load month from...", command=loadFromJSON)
+    saveToButton = Button(Calendar, text="save month to...", command=saveToJSON)
 
-##def saveToJSON():
-##    # Saves the raw text data from the text objects
-##    for day in range(len(textObjectDict)):
-##        saveDict[day] = textObjectDict[day + 1].get("1.0", "end - 1 chars")
-##
-##    # Asks the user for a file location and saves a JSON containg the text for each day.
-##    fileLocation = filedialog.asksaveasfilename(initialdir="/", title="Save JSON to..")
-##    if fileLocation != '':
-##        with open(fileLocation, 'w') as jFile:
-##            json.dump(saveDict, jFile)
-##
-##def loadFromJSON():
-##    # Asks the user for a JSON file to open
-##    fileLocation = filedialog.askopenfilename(initialdir="/", title="Select a JSON to open")
-##    if fileLocation != '':
-##        f = open(fileLocation)
-##        global saveDict
-##        saveDict = json.load(f)
-##
-##        # Copies the saved text data to the current text objects
-##        for day in range(len(textObjectDict)):
-##            textObjectDict[day + 1].insert("1.0", saveDict[str(day)])
+    # Places them below the calendar
+    loadFrom.grid(row=8, column=4)
+    saveToButton.grid(row=8, column=2)
+
+def saveToJSON():
+    # Saves the raw text data from the text objects
+    for day in range(len(textObjectDict)):
+        saveDict[day] = textObjectDict[day + 1].get("1.0", "end - 1 chars")
+
+    # Asks the user for a file location and saves a JSON containg the text for each day.
+    fileLocation = filedialog.asksaveasfilename(initialdir="/", title="Save JSON to..")
+    if fileLocation != '':
+        with open(fileLocation, 'w') as jFile:
+            json.dump(saveDict, jFile)
+
+def loadFromJSON():
+    # Asks the user for a JSON file to open
+    fileLocation = filedialog.askopenfilename(initialdir="/", title="Select a JSON to open")
+    if fileLocation != '':
+        f = open(fileLocation)
+        global saveDict
+        saveDict = json.load(f)
+
+        # Copies the saved text data to the current text objects
+        for day in range(len(textObjectDict)):
+            textObjectDict[day + 1].insert("1.0", saveDict[str(day)])
 
 # Create function for calculating if it is a leap year
 def isLeapYear(year):
@@ -299,19 +255,18 @@ def daysInMonth(month, year):
             numberDays = 28
     return numberDays
 
+# Holds the raw text input for each day
+saveDict = {}
 
-
-
+# Holds the text objects on each day
+textObjectDict = {}
 
 # This makes the grid object appear
 today = date.today()
 
 printMonthYear(month, year)
 makeButtons()
-
-monthGenerator(dayMonthStarts(month, year), daysInMonth(month, year),month, year)
-
-
+monthGenerator(dayMonthStarts(month, year), daysInMonth(month, year))
 
 
 #placing frame for menu bar left
