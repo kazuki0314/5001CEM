@@ -66,44 +66,65 @@ show_frame(staff_training_list)
 
 staff_training_list.config()
 
+
+
 st_transFrame = Frame(staff_training_list, bg='white', highlightthickness=1)
 st_transFrame.place(x=150, y=20, height=715, width=1200)
 
 # Create the label
-trainlabel = Label(st_transFrame, text='TRAINING', font=('Arial', 35), fg='#2181AA', bg='white')
-trainlabel.place(x=0, y=15, width=400)
+main_frame = tk.Frame(st_transFrame)
+main_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-venue_static_label = Label(st_transFrame, text='Venue:', font=('Arial', 20), fg='#2181AA', bg='white')
-venue_static_label.place(x=50, y=100)
+my_canvas = tk.Canvas(main_frame)
+my_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-venue_value_label = Label(st_transFrame, fg='black', bg='white')
-venue_value_label.place(x=150, y=103)
+my_scrollbar = ttk.Scrollbar(main_frame, orient=tk.VERTICAL, command=my_canvas.yview)
+my_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-date_static_label = Label(st_transFrame, text='Date:', font=('Arial', 20), fg='#2181AA', bg='white')
-date_static_label.place(x=50, y=150)
+my_canvas.configure(yscrollcommand=my_scrollbar.set)
+my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
 
-date_value_label = Label(st_transFrame, fg='black', bg='white')
-date_value_label.place(x=130, y=152)
+second_frame = tk.Frame(my_canvas, background='white')
+second_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+my_canvas.create_window((0, 0), window=second_frame, anchor="nw", width=window.winfo_screenwidth(), height=window.winfo_screenheight())
 
-time_static_label = Label(st_transFrame, text='Time:', font=('Arial', 20), fg='#2181AA', bg='white')
-time_static_label.place(x=50, y=200)
-
-time_value_label = Label(st_transFrame, fg='black', bg='white')
-time_value_label.place(x=125, y=203)
-
-department_static_label = Label(st_transFrame, text='Department:', font=('Arial', 20), fg='#2181AA', bg='white')
-department_static_label.place(x=50, y=250)
-
-department_value_label = Label(st_transFrame, fg='black', bg='white')
-department_value_label.place(x=210, y=253)
-
-program_flow_label = Label(st_transFrame, text='Program Flow:', font=('Arial', 20), fg='#2181AA', bg='white')
-program_flow_label.place(x=50, y=300)
+# Create the label
+trainlabel = tk.Label(second_frame, text='TRAINING', font=('Arial', 35), fg='#2181AA', bg='white')
+trainlabel.place(x=10, y=20)
 
 
-# Create a box under the program flow label
-#box_canvas_ep = Canvas(st_transFrame, width=800, height=250, bg='white', highlightthickness=1, highlightbackground='black')
-#box_canvas_ep.place(x=250, y=350)
+
+venue_static_label = tk.Label(second_frame, text='Venue:', font=('Arial', 20), fg='#2181AA', bg='white')
+venue_static_label.place(x=10, y=100)
+
+venue_value_label = tk.Label(second_frame, fg='black', bg='white')
+venue_value_label.place(x=100, y=103)
+
+date_static_label = tk.Label(second_frame, text='Date:', font=('Arial', 20), fg='#2181AA', bg='white')
+date_static_label.place(x=10, y=150)
+
+date_value_label = tk.Label(second_frame, fg='black', bg='white')
+date_value_label.place(x=80, y=152)
+
+time_static_label = tk.Label(second_frame, text='Time:', font=('Arial', 20), fg='#2181AA', bg='white')
+time_static_label.place(x=10, y=200)
+
+time_value_label = tk.Label(second_frame, fg='black', bg='white')
+time_value_label.place(x=80, y=203)
+
+department_static_label = tk.Label(second_frame, text='Department:', font=('Arial', 20), fg='#2181AA', bg='white')
+department_static_label.place(x=10, y=250)
+
+department_value_label = tk.Label(second_frame, fg='black', bg='white')
+department_value_label.place(x=170, y=253)
+
+program_flow_label = tk.Label(second_frame, text='Program Flow:', font=('Arial', 20), fg='#2181AA', bg='white')
+program_flow_label.place(x=10, y=300)
+
+
+#Create a box under the program flow label
+box_canvas_ep = Canvas(second_frame, width=1150, height=650, bg='white', highlightthickness=1, highlightbackground='black')
+box_canvas_ep.place(x=10, y=350)
 
 
 #Add some style:
@@ -115,27 +136,24 @@ stylesfp.configure("Treeview.Heading", font=('times', 15, 'bold'), background='#
 stylesfp.map("Treeview", foreground=[('selected', 'white')])
 
 open_tree = ttk.Treeview(
-    st_transFrame,
+    second_frame,
     selectmode="extended",
     show='headings',
     columns=('Anything'),
     style="Treeview"
 )
-open_tree.place(x=20, y=350, relwidth=0.97, relheight=0.41)
+
 
 #configure horizontal and vertical scrollbar for treeview
 x_scrollersfp = Scrollbar(open_tree, orient=HORIZONTAL, command=open_tree.xview)
 y_scrollersfp = Scrollbar(open_tree, orient=VERTICAL, command=open_tree.yview)
 x_scrollersfp.pack(side=BOTTOM, fill=X)
 y_scrollersfp.pack(side=RIGHT, fill=Y)
-open_tree.config( xscrollcommand=x_scrollersfp.set, yscrollcommand=y_scrollersfp)
-
-
 
 
 # Create a new frame for the Register button
-register_button_frame_ep = Frame(st_transFrame, bg='#7AB8F0')
-register_button_frame_ep.place(x=500, y=650, width=120, height=30)
+register_button_frame_ep = Frame(second_frame, bg='#7AB8F0')
+register_button_frame_ep.place(x=500, y=1045, width=120, height=30)
 
 # Function to handle the register button click
 def register_button_ep_clicked():
@@ -146,6 +164,12 @@ def register_button_ep_clicked():
 # Add the register button
 register_button_ep = Button(register_button_frame_ep, text="Register", bg='#2181AA', fg='white', font=('Arial', 12), relief='flat', command=register_button_ep_clicked)
 register_button_ep.pack(fill=BOTH, expand=True)
+
+
+
+#==========================================================================================================================================================================
+#=============================STAFF TRAIN LIST=============================================================================================================================
+#==========================================================================================================================================================================
 
 sftrainlist = Frame(staff_training_list, bg='white', highlightthickness=1)
 sftrainlist.place(x=150, y=20, height=715, width=1200)
@@ -158,9 +182,9 @@ tl_label.place(x=0, y=15, width=400)
 search_area_framesft = Frame(sftrainlist, bg='#7AB8F0')
 search_area_framesft.place(x=45, y=80, width=300, height=40)
 
-#search_icon_sft = PhotoImage(file="images/search_icon_2.png")
-#search_label_sft = Label(search_area_framesft, image=search_icon_sft, bg='#7AB8F0')
-#search_label_sft.pack(side=RIGHT, padx=5)
+search_icon_sft = PhotoImage(file="images/search_icon_2.png")
+search_label_sft = Label(search_area_framesft, image=search_icon_sft, bg='#7AB8F0')
+search_label_sft.pack(side=RIGHT, padx=5)
 
 search_textlsp = Entry(search_area_framesft, bg='#7AB8F0', font=('Arial', 12), relief='flat')
 search_textlsp.pack(side=LEFT, padx=5)
@@ -224,9 +248,7 @@ window.bind("<BackSpace>", clear_table)
 
 
 
-search_button_lps = Button(
-    search_button_framesft, text="Search", bg='#2181AA', fg='white', font=('Arial', 12), relief='flat',
-    command=search_button_lps_clicked)
+search_button_lps = Button(search_button_framesft, text="Search", bg='#2181AA', fg='white', font=('Arial', 12), relief='flat',command=search_button_lps_clicked)
 search_button_lps.pack(fill=BOTH, expand=True)
 
 def select_button_clicked():
@@ -317,7 +339,7 @@ for row in training_datast:
 
 
 #placing frame for menu bar left
-menuFrame = Frame(staff_training_list, bg='#2181AA', width=170, height=715, highlightthickness=1)
+menuFrame = Frame(staff_training_list,bg='#2181AA', width=170, height=715, highlightthickness=1)
 menuFrame.place(x=0, y=20)
 
 #Defining the buttons for menu bar in Home page left
